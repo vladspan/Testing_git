@@ -8,72 +8,75 @@ struct ContentView: View {
     @State private var operation: String = ""
 
     var body: some View {
-        VStack {
-            Text("Cool calc")
-                .foregroundColor(.blue)
-                .font(.system(size: 40, weight: .bold))
-                .padding()
-
-            Text("Result: \(String(format: "%.2f", result))")
-                .foregroundColor(.white)
-                .padding()
-
-            // Number Buttons
-            GridStack(rows: 3, columns: 3) { row, col in
-                Button(action: {
-                    self.appendNumber((row * 3) + col + 1)
-                }) {
-                    Text("\((row * 3) + col + 1)")
-                        .buttonStyle()
-                }
-            }
-
-            HStack {
-                Button(action: { self.appendNumber(0) }) {
-                    Text("0")
-                        .buttonStyle()
-                }
-
-                Button(action: { self.reset() }) {
-                    Text("C")
-                        .buttonStyle()
-                }
-            }
-            .padding()
-
-            // Operation Buttons
-            VStack {
-                ForEach(["+", "-", "*", "/"], id: \.self) { op in
-                    Button(action: { self.performOperation(op) }) {
-                        Text(op)
-                            .buttonStyle()
-                    }
-                }
-            }
-            .padding()
-
-            // Other Operations
-            HStack {
-                Button(action: { self.performSquare() }) {
-                    Text("x^2")
-                        .buttonStyle()
-                }
-
-                Button(action: { self.performSquareRoot() }) {
-                    Text("√")
-                        .buttonStyle()
-                }
-            }
-            .padding()
-
-        }
-        .padding()
-        .background(
+        ZStack{
             Image("bugatti_divo_00")
                 .resizable()
                 .scaledToFill()
                 .edgesIgnoringSafeArea(.all)
-        )
+            
+            VStack {
+                Text("Cool calc")
+                    .foregroundColor(.blue)
+                    .font(.system(size: 40, weight: .bold))
+                    .padding()
+                
+                Text("\(String(format: "%.2f", result))")
+                    .foregroundColor(.white)
+                    .font(.system(size: 30, weight: .medium))
+                    .padding()
+                
+                // Number Buttons
+                GridStack(rows: 3, columns: 3) { row, col in
+                    Button(action: {
+                        self.appendNumber((row * 3) + col + 1)
+                    }) {
+                        Text("\((row * 3) + col + 1)")
+                            .buttonStyle()
+                    }
+                }
+                
+                HStack {
+                    Button(action: { self.appendNumber(0) }) {
+                        Text("0")
+                            .buttonStyle()
+                    }
+                    
+                    Button(action: { self.reset() }) {
+                        Text("C")
+                            .buttonStyle()
+                    }
+                }
+                .padding()
+                
+                // Operation Buttons
+                HStack {
+                    ForEach(["+", "-", "*", "/"], id: \.self) { op in
+                        Button(action: { self.performOperation(op) }) {
+                            Text(op)
+                                .buttonStyle()
+                        }
+                    }
+                }
+                .padding()
+                
+                // Other Operations
+                HStack {
+                    Button(action: { self.performSquare() }) {
+                        Text("x^2")
+                            .buttonStyle()
+                    }
+                    
+                    Button(action: { self.performSquareRoot() }) {
+                        Text("√")
+                            .buttonStyle()
+                    }
+                }
+                .padding()
+                
+            }
+            .padding()
+        }
+        
     }
 
     func appendNumber(_ number: Int) {
@@ -136,7 +139,7 @@ struct ContentView: View {
 extension Text {
     func buttonStyle() -> some View {
         self
-            .frame(width: 29, height: 29)
+            .frame(width: 30, height: 30)
             .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
             .foregroundColor(.white)
             .cornerRadius(5)
