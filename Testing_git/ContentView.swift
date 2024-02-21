@@ -25,7 +25,7 @@ struct ContentView: View {
             VStack {
                 HStack{
                     Text("Cool calc")
-                        .foregroundColor(.white)
+                        .foregroundColor(.blue)
                         .font(.system(size: 40, weight: .bold))
                         .padding(.leading)
                     Spacer()
