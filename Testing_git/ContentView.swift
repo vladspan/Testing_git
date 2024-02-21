@@ -1,9 +1,3 @@
-//
-//  ContentView.swift
-//  Testing_git
-//
-//  Created by Vladimir Spanic on 17.02.2024..
-//
 
 import SwiftUI
 
@@ -12,199 +6,162 @@ struct ContentView: View {
     @State private var result: Double = 0
     @State private var accumulatedNumbers: [Double] = []
     @State private var operation: String = ""
-   
-    
+
     var body: some View {
-        ZStack{
+        VStack {
+            Text("Cool calc")
+                .foregroundColor(.blue)
+                .font(.system(size: 40, weight: .bold))
+                .padding()
+
+            Text("Result: \(String(format: "%.2f", result))")
+                .foregroundColor(.white)
+                .padding()
+
+            // Number Buttons
+            GridStack(rows: 3, columns: 3) { row, col in
+                Button(action: {
+                    self.appendNumber((row * 3) + col + 1)
+                }) {
+                    Text("\((row * 3) + col + 1)")
+                        .buttonStyle()
+                }
+            }
+
+            HStack {
+                Button(action: { self.appendNumber(0) }) {
+                    Text("0")
+                        .buttonStyle()
+                }
+
+                Button(action: { self.reset() }) {
+                    Text("C")
+                        .buttonStyle()
+                }
+            }
+            .padding()
+
+            // Operation Buttons
+            VStack {
+                ForEach(["+", "-", "*", "/"], id: \.self) { op in
+                    Button(action: { self.performOperation(op) }) {
+                        Text(op)
+                            .buttonStyle()
+                    }
+                }
+            }
+            .padding()
+
+            // Other Operations
+            HStack {
+                Button(action: { self.performSquare() }) {
+                    Text("x^2")
+                        .buttonStyle()
+                }
+
+                Button(action: { self.performSquareRoot() }) {
+                    Text("√")
+                        .buttonStyle()
+                }
+            }
+            .padding()
+
+        }
+        .padding()
+        .background(
             Image("bugatti_divo_00")
                 .resizable()
                 .scaledToFill()
-                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
-    
-            
-            VStack {
-                HStack{
-                    Text("Cool calc")
-                        .foregroundColor(.white)
-                        .font(.system(size: 40, weight: .bold))
-                        .padding(.leading)
-                    Spacer()
-                
-                }.padding(.bottom)
-                Spacer()
-                TextField("Enter number", text: $currentNumber)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                
-                //TextField("Enter second number", text: $secondNumber)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                //
-                VStack{
-                    HStack{
-                        Button(action: {
-                            self.performOperation("+")}
-                               , label: {
-                            Text("+")
-                                .frame(width: 40, height: 30)
-                                .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .padding()
-                            
-                        })
-                        .padding()
-                        
-                        
-                        Button(action: {
-                            self.performOperation("-")}
-                               , label: {
-                            Text("-")
-                                .frame(width: 40, height: 30)
-                                .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .padding()
-                            
-                        })
-                        .padding()
-                    }
-                    HStack{
-                        Button(action: {
-                            self.performOperation("*")}
-                               , label: {
-                            Text("*")
-                                .frame(width: 40, height: 30)
-                                .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .padding()
-                            
-                        })
-                        .padding()
-                        
-                        
-                        Button(action: {
-                            self.performOperation("/")}
-                               , label: {
-                            Text("/")
-                                .frame(width: 40, height: 30)
-                                .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .padding()
-                            
-                        })
-                        .padding()
-                    }
-                    HStack{
-                        Button(action: {
-                            self.performSquare()}
-                               , label: {
-                            Text("x^2")
-                                .frame(width: 40, height: 30)
-                                .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .padding()
-                            
-                        })
-                        .padding()
-                        
-                        
-                        Button(action: {
-                            self.performSquareRoot()}
-                               , label: {
-                            Text("√")
-                                .frame(width: 40, height: 30)
-                                .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
-                                .foregroundColor(.white)
-                                .cornerRadius(10)
-                                .padding()
-                            
-                        })
-                        .padding()
-                    }
-                }
-                
-                Text("Result: \(String(format: "%.2f",result))")
-                    .foregroundColor(.white)
-                
-                Spacer()
-                
-                HStack{
-                    
-                    Spacer()
-                    Button(action: {resetNum()}, label:{
-                        Text("Reset")
-                            .frame(width: 100, height: 40)
-                            .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
-                            .foregroundColor(.white)
-                            .cornerRadius(10)
-                            .padding()
-                    })
-                    
-                }.padding()
-                .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
-            
-            }.padding(.horizontal, 500)
-                
+                .edgesIgnoringSafeArea(.all)
+        )
+    }
+
+    func appendNumber(_ number: Int) {
+        currentNumber += "\(number)"
+        if let num = Double(currentNumber) {
+            result = num
         }
     }
-    
+
     func performOperation(_ op: String) {
         if let number = Double(currentNumber) {
-            switch operation {
-            case "":
-                accumulatedNumbers.append(number)
-                result = number
-            case "+":
-                accumulatedNumbers.append(number)
-                result += number
-            case "-":
-                accumulatedNumbers.append(number)
-                result -= number
-            case "*":
-                accumulatedNumbers.append(number)
-                result *= number
-            case "/":
-                if number != 0 {
-                    accumulatedNumbers.append(number)
-                    result /= number
-                } else {
-                    // Handle division by zero error
-                }
-            default:
-                break
-            }
-            
+            accumulatedNumbers.append(number)
             currentNumber = ""
-            operation = op
-            
         }
+
+        switch operation {
+        case "":
+            break
+        case "+":
+            result += accumulatedNumbers.reduce(0, +)
+        case "-":
+            result -= accumulatedNumbers.reduce(0, +)
+        case "*":
+            result *= accumulatedNumbers.reduce(1, *)
+        case "/":
+            if let firstNumber = accumulatedNumbers.first {
+                result = accumulatedNumbers.dropFirst().reduce(firstNumber, /)
+            }
+        default:
+            break
+        }
+
+        operation = op
     }
     
-    func performSquareRoot(){
-        if let number = Double(currentNumber){
+    func performSquareRoot() {
+        if let number = Double(currentNumber) {
             result = sqrt(number)
             currentNumber = ""
             operation = ""
         }
     }
-    
-    func performSquare(){
-        if let number = Double(currentNumber){
+
+    func performSquare() {
+        if let number = Double(currentNumber) {
             result = pow(number, 2)
             currentNumber = ""
             operation = ""
         }
     }
-    
-    func resetNum(){
+
+    func reset() {
         result = 0
         currentNumber = ""
+        accumulatedNumbers = []
+    }
+    
+}
+
+extension Text {
+    func buttonStyle() -> some View {
+        self
+            .frame(width: 29, height: 29)
+            .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
+            .foregroundColor(.white)
+            .cornerRadius(5)
+            .padding()
     }
 }
+
+struct GridStack<Content: View>: View {
+    let rows: Int
+    let columns: Int
+    let content: (Int, Int) -> Content
+
+    var body: some View {
+        VStack(spacing: 0) {
+            ForEach(0..<rows, id: \.self) { row in
+                HStack(spacing: 0) {
+                    ForEach(0..<self.columns, id: \.self) { column in
+                        self.content(row, column)
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 
 #Preview {
