@@ -15,10 +15,12 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
-                Text("Cool calc")
-                    .foregroundColor(.blue)
-                    .font(.system(size: 40, weight: .bold))
-                    .padding()
+                HStack(spacing:0){
+                    Text("Cool calc")
+                        .foregroundColor(.blue)
+                        .font(.system(size: 40, weight: .bold))
+                        .padding()
+                }
                 
                 Text("\(String(format: "%.2f", result))")
                     .foregroundColor(.white)
@@ -139,7 +141,7 @@ struct ContentView: View {
 extension Text {
     func buttonStyle() -> some View {
         self
-            .frame(width: 30, height: 30)
+            .frame(width: 35, height: 35)
             .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
             .foregroundColor(.white)
             .cornerRadius(5)
