@@ -6,6 +6,8 @@ struct ContentView: View {
     @State private var firstNumber: String = ""
     @State private var secondNumber: String = ""
     @State private var isFirstNumberSet: Bool = true
+    @State private var minusFlag = false
+    @State private var answer: Double = 0.0
     
     
     var body: some View {
@@ -46,16 +48,15 @@ struct ContentView: View {
                         Text("0")
                             .buttonStyle()
                     }
-                    .padding()
+                    
                     
                     Button(action: {
-                        self.operation
                         self.calculateResult()
                     }) {
                         Text("=")
                             .buttonStyle()
                     }
-                    .padding()
+                    
                     
                     Button(action: {
                         self.appendNumberToCurrentNumber(".")
@@ -63,15 +64,37 @@ struct ContentView: View {
                         Text(",")
                             .buttonStyle()
                     }
-                    .padding()
-                }
+                    
+                    
+                    Button(action: {
+                        self.answr()
+                        self.reset()
+                    }){
+                        Text("ANS")
+                            .buttonStyle()
+                    }
+                }.padding()
+                
                 
                 // Operations buttons
                 HStack{
-                    ForEach(["+", "-", "*", "/", "√x", "x^2"], id: \.self) { op in
+                    ForEach(["+", "-", "*", "/", "√x", "x²"], id: \.self) { op in
                         Button(action: {
-                            self.operation = op
-                            //self.calculateResult()
+                            if answer == 0.0{
+                                if self.firstNumber == "" {
+                                    if op == "-" {
+                                        minusFlag = true
+                                    }
+                                } else {
+                                    self.operation = op
+                                }
+                            }else {
+                                if self.firstNumber == "" {
+                                    self.operation = op
+                                } else {
+                                    self.operation = op
+                                }
+                            }
                         }){ Text(op)
                         }
                         .frame(width: 35, height: 35)
@@ -82,37 +105,95 @@ struct ContentView: View {
                 }.padding()
                 
                 
-                // Reset button
-                Button(action: {
-                    self.reset()
-                }) {
-                    Text("C")
-                        .buttonStyle()
-                }
-                .padding()
-                
                 HStack{
-                    Text("\(firstNumber)")
-                    Text(operation)
-                    Text("\(secondNumber)")
+                    Button(action: {
+                        self.reset()
+                    }) {
+                        Text("C")
+                            .buttonStyle()
+                    }
+                    
+                    Button(action:{
+                        self.clearAll()
+                    }) {
+                        Text("AC")
+                            .buttonStyle()
+                    }
+                    
                 }
-                .foregroundColor(.white)
                 
-                Text("Result: \(String(format: "%.3f", result))")
+                if answer == 0.0 {
+                    HStack{
+                        if minusFlag{
+                            Text("- \(firstNumber)")
+                            Text(operation)
+                            Text("\(secondNumber)")
+                        }else {
+                            Text("\(firstNumber)")
+                            Text(operation)
+                            Text("\(secondNumber)")
+                        }
+                    }
                     .foregroundColor(.white)
+                } else {
+                    HStack{
+                        
+                            Text("\(String(format: "%.3f", answer))")
+                            Text(operation)
+                            Text("\(firstNumber)")
+                        }
+                    .foregroundColor(.white)
+
+                    }
+                                
                 
+                if operation == "√x" && minusFlag {
+                    Text("Result: \(String(format: "%.3f", result))i")
+                        .foregroundColor(.white)
+                } else {
+                    Text("Result: \(String(format: "%.3f", result))")
+                        .foregroundColor(.white)
+                }
             }
-            
             .padding()
-            
         }
     }
     
     func appendNumberToCurrentNumber(_ number: String) {
-        if operation.isEmpty {
-            firstNumber.append(number)
+        if answer == 0.0 {
+            if operation.isEmpty {
+                if firstNumber.isEmpty && number == "-" {
+                    firstNumber.append(number)
+                }else {
+                    firstNumber.append(number)
+                }
+            }
+            
+            else {
+                if operation == "x²" || operation == "√x"{
+                    secondNumber = ""
+                }else {
+                    secondNumber.append(number)
+                }
+                
+            }
+            
         } else {
-            secondNumber.append(number)
+            if operation.isEmpty {
+                if answer != 0.0 && answer < 0 {
+                    firstNumber.append(number)
+                }else {
+                    firstNumber.append(number)
+                }
+            } else {
+                if operation == "x²" || operation == "√x"{
+                    firstNumber = ""
+                    secondNumber = ""
+                }else {
+                    firstNumber.append(number)
+                }
+                
+            }
         }
     }
     
@@ -120,41 +201,129 @@ struct ContentView: View {
         let firstNum = Double(firstNumber) ?? 0.0
         let secondNum = Double(secondNumber) ?? 0.0
         
-        switch operation {
-        case "+":
-            result = add(firstNum, secondNum)
-        case "-":
-            result = subtract(firstNum, secondNum)
-        case "*":
-            result = multiply(firstNum, secondNum)
-        case "/":
-            result = divide(firstNum, secondNum)
-        case "x^2":
-            result = squareClac(firstNum)
-        case "√x":
-            result = squareRoot(firstNum)
-            // Do nothing, the result should already be calculated
-            break
-        default:
-            break
+        if answer == 0.0 {
+            
+            switch operation {
+            case "+":
+                if minusFlag {
+                    result = add(negNum(firstNum), secondNum)
+                    
+                }else {
+                    result = add(firstNum, secondNum)
+                    
+                }
+                
+            case "-":
+                if minusFlag {
+                    result = subtract(negNum(firstNum), secondNum)
+                    
+                }else {
+                    result = subtract(firstNum, secondNum)
+                    
+                }
+            case "*":
+                if minusFlag{
+                    result = multiply(negNum(firstNum), secondNum)
+                    
+                }else {
+                    result = multiply(firstNum, secondNum)
+                    
+                }
+                
+            case "/":
+                if minusFlag{
+                    result = divide(negNum(firstNum), secondNum)
+                    
+                }else {
+                    result = divide(firstNum, secondNum)
+                    
+                }
+                
+            case "x²":
+                result = squareClac(firstNum)
+                
+                
+            case "√x":
+                result = squareRoot(firstNum)
+                
+                // Do nothing, the result should already be calculated
+                break
+            default:
+                break
+            }
+        } else if answer != 0 {
+            switch operation {
+            case "+":
+                if minusFlag {
+                    result = add(negNum(answer), firstNum)
+                    
+                }else {
+                    result = add(answer, firstNum)
+                    
+                }
+                
+            case "-":
+                    result = subtract(answer, firstNum)
+                    
+            case "*":
+                if minusFlag{
+                    result = multiply(negNum(answer), firstNum)
+                    
+                }else {
+                    result = multiply(answer, firstNum)
+                    
+                }
+                
+            case "/":
+                if minusFlag{
+                    result = divide(negNum(answer), firstNum)
+                    
+                }else {
+                    result = divide(answer, firstNum)
+                    
+                }
+                
+            case "x²":
+                result = squareClac(answer)
+                
+                
+            case "√x":
+                result = squareRoot(answer)
+                
+                // Do nothing, the result should already be calculated
+                break
+            default:
+                break
+            }
         }
  
     }
     func reset() {
         operation = ""
-        result = 0.0
         firstNumber = ""
         secondNumber = ""
+        minusFlag = false
         
     }
+    
+    func clearAll() {
+        operation = ""
+        firstNumber = ""
+        secondNumber = ""
+        minusFlag = false
+        result = 0.0
+        answer = 0.0
+    }
+    
+    
     func add(_ num1: Double, _ num2: Double) -> Double {
         return num1 + num2
         
     }
     
     func subtract(_ num1: Double, _ num2: Double) -> Double {
-        return num1 - num2
-    }
+            return num1 - num2
+        }
     
     func multiply(_ num1: Double, _ num2: Double) -> Double {
         return num1 * num2
@@ -176,9 +345,16 @@ struct ContentView: View {
     func squareRoot(_ num: Double) -> Double {
         return sqrt(num)
     }
+    
+    func negNum(_ num: Double) -> Double {
+        return -num
+    }
+    
+    func answr() -> Double {
+        answer = result
+        return answer
+    }
 }
-
-
 
 
 extension Text {
