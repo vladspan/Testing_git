@@ -8,22 +8,79 @@ struct ContentView: View {
     @State private var isFirstNumberSet: Bool = true
     @State private var minusFlag = false
     @State private var answer: Double = 0.0
-    
+    let brutalIamge = ["2020-Gordon-Murray-Automotive-T50-4","2022-Gordon-Murray-Automotive-T50-45","Murray-T50-7","bugatti_divo_00","RIMAC_NEVERA_FRONT_HIGH-2880x1920"]
+    let customNames = ["P1", "P2", "P3", "P4", "P5"]
+    @State private var imageIndex = 4
+    @State private var colorIndex = 0
+    let colors: [Color] = [Color.red, Color.green, Color.blue, Color.purple, Color.brown]
+    let colorNames = ["Red", "Green", "Blue", "Purple", "Brown"]
     
     var body: some View {
         ZStack{
-            Image("bugatti_divo_00")
+    
+            Image(brutalIamge[imageIndex])
                 .resizable()
                 .scaledToFill()
                 .edgesIgnoringSafeArea(.all)
             
             VStack {
-                Text("Cool calc")
-                    .foregroundColor(.blue)
-                    .font(.system(size: 35, weight: .bold))
+                HStack{
+                    Spacer()
+                        .frame(width: 350)
+                    Menu {
+                        ForEach(0..<customNames.count) { index in
+                            Button(action: {
+                                self.imageIndex = index
+                            })
+                            {
+                                Text(self.customNames[index])
+                            }
+                            
+                        }
+                        
+                    } label: {
+                        Text("Backgorund")
+                            .frame(width: 65, height: 50)
+                            .background(LinearGradient(gradient: Gradient(colors: [colors[colorIndex]]), startPoint: .top, endPoint: .bottom))
+                            .font(.system(size: 10))
+                            .foregroundColor(.white)
+                            .cornerRadius(15)
+                            .padding()
+                    }
+                    .frame(width: 60, height: 12)
                     .padding()
-                
-                // Grid of numbers in 3x3 format
+                   
+                    Menu{
+                        ForEach(0..<colors.count){ index in
+                            Button(action: {
+                                self.colorIndex = index
+                             
+                            })
+                            {
+                                Text(self.colorNames[index])
+                            }
+                        }
+                    }label: {
+                        Text("Button color")
+                            .frame(width: 65, height: 50)
+                            .background(LinearGradient(gradient: Gradient(colors: [colors[colorIndex]]), startPoint: .top, endPoint: .bottom))
+                            .font(.system(size: 10))
+                            .foregroundColor(.white)
+                            .cornerRadius(15)
+                            .padding()
+                    }
+                    .frame(width: 60, height: 12)
+                    .padding()
+                    
+                    
+                    Spacer()
+                        .frame(width: 150)
+        
+                }
+                .padding()
+                .navigationBarTitle("Dropdown Menu")
+                Spacer()
+                    .frame(height: 170)
                 VStack {
                     ForEach(0..<3) { row in
                         HStack(spacing:.maximum(0, 0)) {
@@ -32,51 +89,57 @@ struct ContentView: View {
                                     self.appendNumberToCurrentNumber("\(row * 3 + column + 1)")
                                 }) {
                                     Text("\(row * 3 + column + 1)")
-                                        .buttonStyle()
+                                        .buttonStyle(backgroundColors: [colors[colorIndex]])
                                 }
-                                .frame(width: 40, height: 40)
+                                .frame(width: 50, height: 50)
                             }
                         }
                     }
                 }
-                
-                // Additional buttons for 0, =, and comma (,)
+            
                 HStack {
+                    Spacer()
+                        .frame(width: 250)
                     Button(action: {
                         self.appendNumberToCurrentNumber("0")
                     }) {
                         Text("0")
-                            .buttonStyle()
+                            .buttonStyle(backgroundColors: [colors[colorIndex]])
                     }
-                    
-                    
+                    Spacer()
+                        .frame(width: 5)
                     Button(action: {
                         self.calculateResult()
                     }) {
                         Text("=")
-                            .buttonStyle()
+                            .buttonStyle(backgroundColors: [colors[colorIndex]])
                     }
-                    
+                    Spacer()
+                        .frame(width: 5)
                     
                     Button(action: {
                         self.appendNumberToCurrentNumber(".")
                     }) {
                         Text(",")
-                            .buttonStyle()
+                            .buttonStyle(backgroundColors: [colors[colorIndex]])
                     }
-                    
+                    Spacer()
+                        .frame(width: 5)
                     
                     Button(action: {
                         self.answr()
                         self.reset()
                     }){
                         Text("ANS")
-                            .buttonStyle()
+                            .buttonStyle(backgroundColors: [colors[colorIndex]])
                     }
-                }.padding()
-                
-                
-                // Operations buttons
+                    Spacer()
+                        .frame(width: 250)
+                        
+                }
+                .frame(width: 10, height: 30)
+                .padding()
+  
                 HStack{
                     ForEach(["+", "-", "*", "/", "√x", "x²"], id: \.self) { op in
                         Button(action: {
@@ -95,32 +158,37 @@ struct ContentView: View {
                                     self.operation = op
                                 }
                             }
-                        }){ Text(op)
+                        })
+                        { Text(op)
+                                .buttonStyle(backgroundColors: [colors[colorIndex]])
                         }
-                        .frame(width: 35, height: 35)
-                        .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
-                        .foregroundColor(.white)
-                        .cornerRadius(5)
+                        
                     }
-                }.padding()
+                    .frame(width: 40, height: 40)
+                }
+                .padding()
                 
-                
+            
                 HStack{
                     Button(action: {
                         self.reset()
                     }) {
                         Text("C")
-                            .buttonStyle()
+                            .buttonStyle(backgroundColors: [colors[colorIndex]])
                     }
                     
                     Button(action:{
                         self.clearAll()
                     }) {
                         Text("AC")
-                            .buttonStyle()
+                            .buttonStyle(backgroundColors: [colors[colorIndex]])
                     }
-                    
                 }
+                .frame(width: 10, height: 40)
+                .padding()
+                
+                Spacer()
+                    .frame(height: 20)
                 
                 if answer == 0.0 {
                     HStack{
@@ -137,16 +205,13 @@ struct ContentView: View {
                     .foregroundColor(.white)
                 } else {
                     HStack{
-                        
                             Text("\(String(format: "%.3f", answer))")
                             Text(operation)
                             Text("\(firstNumber)")
                         }
                     .foregroundColor(.white)
-
                     }
-                                
-                
+        
                 if operation == "√x" && minusFlag {
                     Text("Result: \(String(format: "%.3f", result))i")
                         .foregroundColor(.white)
@@ -154,6 +219,7 @@ struct ContentView: View {
                     Text("Result: \(String(format: "%.3f", result))")
                         .foregroundColor(.white)
                 }
+                
             }
             .padding()
         }
@@ -261,7 +327,6 @@ struct ContentView: View {
                     result = add(answer, firstNum)
                     
                 }
-                
             case "-":
                     result = subtract(answer, firstNum)
                     
@@ -356,22 +421,19 @@ struct ContentView: View {
     }
 }
 
-
 extension Text {
-    func buttonStyle() -> some View {
+    func buttonStyle(backgroundColors: [Color]) -> some View {
         self
-            .frame(width: 35, height: 35)
-            .background(LinearGradient(gradient: Gradient(colors: [Color.blue]), startPoint: .top, endPoint: .bottom))
+            .frame(width: 45, height: 45)
+            .background(LinearGradient(gradient: Gradient(colors: backgroundColors), startPoint: .top, endPoint: .bottom))
+            .font(.system(size: 18))
             .foregroundColor(.white)
-            .cornerRadius(5)
+            .cornerRadius(15)
             .padding()
     }
 }
 
 
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
+#Preview {
+    ContentView()
 }
