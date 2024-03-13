@@ -278,7 +278,6 @@ struct ContentView: View {
                     result = add(firstNum, secondNum)
                     
                 }
-                
             case "-":
                 if minusFlag {
                     result = subtract(negNum(firstNum), secondNum)
@@ -295,7 +294,6 @@ struct ContentView: View {
                     result = multiply(firstNum, secondNum)
                     
                 }
-                
             case "/":
                 if minusFlag{
                     result = divide(negNum(firstNum), secondNum)
@@ -304,10 +302,8 @@ struct ContentView: View {
                     result = divide(firstNum, secondNum)
                     
                 }
-                
             case "x²":
                 result = squareClac(firstNum)
-                
                 
             case "√x":
                 result = squareRoot(firstNum)
@@ -325,7 +321,6 @@ struct ContentView: View {
                     
                 }else {
                     result = add(answer, firstNum)
-                    
                 }
             case "-":
                     result = subtract(answer, firstNum)
@@ -333,24 +328,19 @@ struct ContentView: View {
             case "*":
                 if minusFlag{
                     result = multiply(negNum(answer), firstNum)
-                    
                 }else {
                     result = multiply(answer, firstNum)
-                    
                 }
                 
             case "/":
                 if minusFlag{
                     result = divide(negNum(answer), firstNum)
-                    
                 }else {
                     result = divide(answer, firstNum)
-                    
                 }
                 
             case "x²":
                 result = squareClac(answer)
-                
                 
             case "√x":
                 result = squareRoot(answer)
@@ -361,14 +351,12 @@ struct ContentView: View {
                 break
             }
         }
- 
     }
     func reset() {
         operation = ""
         firstNumber = ""
         secondNumber = ""
         minusFlag = false
-        
     }
     
     func clearAll() {
@@ -380,10 +368,8 @@ struct ContentView: View {
         answer = 0.0
     }
     
-    
     func add(_ num1: Double, _ num2: Double) -> Double {
         return num1 + num2
-        
     }
     
     func subtract(_ num1: Double, _ num2: Double) -> Double {
