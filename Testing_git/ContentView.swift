@@ -8,10 +8,10 @@ struct ContentView: View {
     @State private var isFirstNumberSet: Bool = true
     @State private var minusFlag = false
     @State private var answer: Double = 0.0
-    let brutalIamge = ["2020-Gordon-Murray-Automotive-T50-4","2022-Gordon-Murray-Automotive-T50-45","Murray-T50-7","bugatti_divo_00","RIMAC_NEVERA_FRONT_HIGH-2880x1920"]
-    let customNames = ["P1", "P2", "P3", "P4", "P5"]
     @State private var imageIndex = 4
     @State private var colorIndex = 0
+    let brutalIamge = ["2020-Gordon-Murray-Automotive-T50-4","2022-Gordon-Murray-Automotive-T50-45","Murray-T50-7","bugatti_divo_00","RIMAC_NEVERA_FRONT_HIGH-2880x1920"]
+    let customNames = ["P1", "P2", "P3", "P4", "P5"]
     let colors: [Color] = [Color.red, Color.green, Color.blue, Color.purple, Color.brown]
     let colorNames = ["Red", "Green", "Blue", "Purple", "Brown"]
     
