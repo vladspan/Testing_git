@@ -35,11 +35,9 @@ struct ContentView: View {
                             {
                                 Text(self.customNames[index])
                             }
-                            
                         }
-                        
                     } label: {
-                        Text("Backgorund")
+                        Text("Background")
                             .frame(width: 65, height: 50)
                             .background(LinearGradient(gradient: Gradient(colors: [colors[colorIndex]]), startPoint: .top, endPoint: .bottom))
                             .font(.system(size: 10))
@@ -54,7 +52,6 @@ struct ContentView: View {
                         ForEach(0..<colors.count){ index in
                             Button(action: {
                                 self.colorIndex = index
-                             
                             })
                             {
                                 Text(self.colorNames[index])
@@ -72,18 +69,82 @@ struct ContentView: View {
                     .frame(width: 60, height: 12)
                     .padding()
                     
-                    
                     Spacer()
                         .frame(width: 150)
-        
                 }
                 .padding()
                 .navigationBarTitle("Dropdown Menu")
+                
                 Spacer()
-                    .frame(height: 170)
+                    .frame(height: 100)
+                
+                if answer == 0.0 {
+                    HStack{
+                        if minusFlag{
+                            Text("- \(firstNumber)")
+                                .calculationStyle()
+                            Text(operation)
+                                .calculationStyle()
+                            Text("\(secondNumber)")
+                                .calculationStyle()
+                        }else {
+                            Text("\(firstNumber)")
+                                .calculationStyle()
+                            Text(operation)
+                                .calculationStyle()
+                            Text("\(secondNumber)")
+                                .calculationStyle()
+                        }
+                    }
+                    .padding(.horizontal)
+                    .background(.white)
+                    .cornerRadius(10)
+                    
+                    
+                } else {
+                    HStack{
+                        Text("\(String(format: "%.3f", answer))")
+                            .calculationStyle()
+                        Text(operation)
+                            .calculationStyle()
+                        if operation == "√x" || operation == "x²"{
+                            Text("")
+                        } else{
+                            Text("\(firstNumber)")
+                                .calculationStyle()
+                        }
+                    }
+                    .padding(.horizontal)
+                    .background(.white)
+                    .cornerRadius(10)
+                    
+                    }
+                
+                Spacer()
+                    .frame(height: 20)
+    
+                if operation == "√x" && minusFlag {
+                    Text("\(String(format: "%.2f", result))i")
+                        .resultStyle()
+                        .padding(.horizontal)
+                        .background(.white)
+                        .cornerRadius(10)
+                        
+                } else {
+                    Text("\(String(format: "%.2f", result))")
+                        .resultStyle()
+                        .padding(.horizontal)
+                        .background(.white)
+                        .cornerRadius(10)
+                }
+                    
+                
+                Spacer()
+                    .frame(height: 50)
+                
                 VStack {
                     ForEach(0..<3) { row in
-                        HStack(spacing:.maximum(0, 0)) {
+                        HStack(spacing:.maximum(15, 5)) {
                             ForEach(0..<3) { column in
                                 Button(action: {
                                     self.appendNumberToCurrentNumber("\(row * 3 + column + 1)")
@@ -91,23 +152,32 @@ struct ContentView: View {
                                     Text("\(row * 3 + column + 1)")
                                         .buttonStyle(backgroundColors: [colors[colorIndex]])
                                 }
-                                .frame(width: 50, height: 50)
+                                .frame(width: 55, height: 55)
                             }
                         }
                     }
                 }
+                
+                Spacer()
+                    .frame(height: 15)
             
                 HStack {
                     Spacer()
-                        .frame(width: 250)
+                    
                     Button(action: {
                         self.appendNumberToCurrentNumber("0")
                     }) {
                         Text("0")
                             .buttonStyle(backgroundColors: [colors[colorIndex]])
                     }
-                    Spacer()
-                        .frame(width: 5)
+                    Button(action: {
+                        self.appendNumberToCurrentNumber(".")
+                    }) {
+                        Text(",")
+                            .buttonStyle(backgroundColors: [colors[colorIndex]])
+                    }
+                    .frame(width: 35)
+                
                     Button(action: {
                         self.calculateResult()
                     }) {
@@ -115,32 +185,14 @@ struct ContentView: View {
                             .buttonStyle(backgroundColors: [colors[colorIndex]])
                     }
                     Spacer()
-                        .frame(width: 5)
-                    
-                    Button(action: {
-                        self.appendNumberToCurrentNumber(".")
-                    }) {
-                        Text(",")
-                            .buttonStyle(backgroundColors: [colors[colorIndex]])
-                    }
-                    Spacer()
-                        .frame(width: 5)
-                    
-                    Button(action: {
-                        self.answr()
-                        self.reset()
-                    }){
-                        Text("ANS")
-                            .buttonStyle(backgroundColors: [colors[colorIndex]])
-                    }
-                    Spacer()
-                        .frame(width: 250)
-                        
                 }
-                .frame(width: 10, height: 30)
+                .frame(width: 10, height: 10)
                 .padding()
-  
-                HStack{
+                
+                Spacer()
+                    .frame(height: 20)
+                
+                HStack(spacing:.maximum(0, 23)){
                     ForEach(["+", "-", "*", "/", "√x", "x²"], id: \.self) { op in
                         Button(action: {
                             if answer == 0.0{
@@ -168,7 +220,6 @@ struct ContentView: View {
                 }
                 .padding()
                 
-            
                 HStack{
                     Button(action: {
                         self.reset()
@@ -183,42 +234,17 @@ struct ContentView: View {
                         Text("AC")
                             .buttonStyle(backgroundColors: [colors[colorIndex]])
                     }
+                    
+                    Button(action: {
+                        self.answr()
+                        self.reset()
+                    }){
+                        Text("M")
+                            .buttonStyle(backgroundColors: [colors[colorIndex]])
+                    }
                 }
                 .frame(width: 10, height: 40)
                 .padding()
-                
-                Spacer()
-                    .frame(height: 20)
-                
-                if answer == 0.0 {
-                    HStack{
-                        if minusFlag{
-                            Text("- \(firstNumber)")
-                            Text(operation)
-                            Text("\(secondNumber)")
-                        }else {
-                            Text("\(firstNumber)")
-                            Text(operation)
-                            Text("\(secondNumber)")
-                        }
-                    }
-                    .foregroundColor(.white)
-                } else {
-                    HStack{
-                            Text("\(String(format: "%.3f", answer))")
-                            Text(operation)
-                            Text("\(firstNumber)")
-                        }
-                    .foregroundColor(.white)
-                    }
-        
-                if operation == "√x" && minusFlag {
-                    Text("Result: \(String(format: "%.3f", result))i")
-                        .foregroundColor(.white)
-                } else {
-                    Text("Result: \(String(format: "%.3f", result))")
-                        .foregroundColor(.white)
-                }
                 
             }
             .padding()
@@ -234,7 +260,6 @@ struct ContentView: View {
                     firstNumber.append(number)
                 }
             }
-            
             else {
                 if operation == "x²" || operation == "√x"{
                     secondNumber = ""
@@ -243,7 +268,6 @@ struct ContentView: View {
                 }
                 
             }
-            
         } else {
             if operation.isEmpty {
                 if answer != 0.0 && answer < 0 {
@@ -284,7 +308,6 @@ struct ContentView: View {
                     
                 }else {
                     result = subtract(firstNum, secondNum)
-                    
                 }
             case "*":
                 if minusFlag{
@@ -292,24 +315,23 @@ struct ContentView: View {
                     
                 }else {
                     result = multiply(firstNum, secondNum)
-                    
                 }
+                
             case "/":
                 if minusFlag{
                     result = divide(negNum(firstNum), secondNum)
                     
                 }else {
                     result = divide(firstNum, secondNum)
-                    
                 }
+                
             case "x²":
                 result = squareClac(firstNum)
                 
             case "√x":
                 result = squareRoot(firstNum)
-                
-                // Do nothing, the result should already be calculated
                 break
+                
             default:
                 break
             }
@@ -403,6 +425,7 @@ struct ContentView: View {
     
     func answr() -> Double {
         answer = result
+        result = 0.0
         return answer
     }
 }
@@ -410,12 +433,41 @@ struct ContentView: View {
 extension Text {
     func buttonStyle(backgroundColors: [Color]) -> some View {
         self
-            .frame(width: 45, height: 45)
+            .frame(width: 55, height: 55)
             .background(LinearGradient(gradient: Gradient(colors: backgroundColors), startPoint: .top, endPoint: .bottom))
-            .font(.system(size: 18))
+            .font(.system(size: 20))
             .foregroundColor(.white)
             .cornerRadius(15)
             .padding()
+    }
+    
+    func resultStyle() -> some View{
+        self
+            .foregroundColor(.black)
+            .font(.system(size: 30))
+            .fontWeight(.regular)
+            .background(.white)
+            .cornerRadius(3.0)
+    }
+    
+    func calculationStyle() -> some View{
+        self
+            .foregroundColor(.black)
+            .font(.system(size: 30))
+            .fontWeight(.regular)
+            .cornerRadius(3.0)
+    }
+}
+
+extension Color {
+    init(hex: UInt32, alpha: Double = 1.0){
+        self.init(
+            .sRGB,
+            red: Double((hex >> 16) & 0xff) / 255,
+            green: Double((hex >> 8) & 0xff) / 255,
+            blue: Double(hex & 0xff) / 255,
+            opacity: alpha
+        )
     }
 }
 
